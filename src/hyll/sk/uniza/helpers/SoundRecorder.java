@@ -1,4 +1,4 @@
-package hyll.sk.uniza.messages;
+package hyll.sk.uniza.helpers;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;

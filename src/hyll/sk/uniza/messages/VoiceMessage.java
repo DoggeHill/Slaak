@@ -1,5 +1,9 @@
 package hyll.sk.uniza.messages;
 
+import hyll.sk.uniza.helpers.DatabaseLoader;
+import hyll.sk.uniza.helpers.MessageType;
+import hyll.sk.uniza.helpers.State;
+
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,26 +12,13 @@ import java.io.IOException;
 public class VoiceMessage implements IMessage {
     private final long recordTime;
     private final long timeStamp;
+    private final int orderNumber;
+    private final File wavFile;
+
+
 
     // format of audio file
     AudioFileFormat.Type fileType = AudioFileFormat.Type.WAVE;
-
-    //TODO: create dynamically
-    // path of the wav file
-    private File wavFile;
-
-
-    // the line from which audio data is captured
-    TargetDataLine line;
-
-
-    public VoiceMessage(long length, long timeStamp) throws IOException {
-        this.recordTime = length;
-        this.timeStamp = timeStamp;
-        this.wavFile = DatabaseLoader.audioFile();
-    }
-
-
     /**
      * Defines an audio format
      */
@@ -42,10 +33,21 @@ public class VoiceMessage implements IMessage {
         return format;
     }
 
+    // the line from which audio data is captured
+    TargetDataLine line;
+
+
+    public VoiceMessage(long length, long timeStamp) throws IOException {
+        this.recordTime = length;
+        this.timeStamp = timeStamp;
+        this.wavFile = DatabaseLoader.audioFile();
+        this.orderNumber = DatabaseLoader.getPosition(MessageType.AUDIO);
+    }
+
 
     @Override
     public String getFormat() {
-        return String.valueOf(this.recordTime);
+        return ":" + this.recordTime + "  " + this.orderNumber;
     }
 
     @Override
@@ -54,11 +56,9 @@ public class VoiceMessage implements IMessage {
     }
 
     @Override
-    public void constructMessage(State state, String nickName) throws IOException {
-        // creates a new thread that waits for a specified
-        // of time before stopping
-        // start recording
+    public void constructMessage(State state, String nickName, String senderName) throws IOException {
 
+        //Create threat and in the end stop audio recorder
         Thread stopper = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -71,16 +71,12 @@ public class VoiceMessage implements IMessage {
                 System.out.println("Finished");
             }
         });
-        System.out.println("here");
+
         stopper.start();
         this.start();
 
-
-
-        // start recording
-
         FileWriter fw = loadDatabase();
-        fw.write(nickName + "   voice  " + this.timeStamp + "\r\n");
+        fw.write("from: " + senderName + " to: " + nickName + " type: voice length:" + this.recordTime + " at: " + this.timeStamp + "\r\n");
         System.out.println("Storing message: " + this.getFormat() + " into database");
         fw.close();
     }
@@ -94,21 +90,12 @@ public class VoiceMessage implements IMessage {
         try {
             AudioFormat format = getAudioFormat();
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-            /*
-            // checks if system supports the data line
-            if (!AudioSystem.isLineSupported(info)) {
-                System.out.println("Line not supported");
-                System.exit(0);
-            }*/
-
             line = (TargetDataLine) AudioSystem.getLine(info);
             line.open(format);
             line.start();   // start capturing
 
             System.out.println("Start capturing...");
-
             AudioInputStream ais = new AudioInputStream(line);
-
             System.out.println("Start recording...");
 
             // start recording

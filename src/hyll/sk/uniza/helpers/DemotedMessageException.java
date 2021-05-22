@@ -1,4 +1,4 @@
-package hyll.sk.uniza.Slakk;
+package hyll.sk.uniza.helpers;
 
 public class DemotedMessageException extends Exception{
     public DemotedMessageException(String errorMessage){

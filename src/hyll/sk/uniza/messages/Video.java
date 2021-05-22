@@ -1,9 +1,15 @@
 package hyll.sk.uniza.messages;
 
+import hyll.sk.uniza.helpers.State;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Video implements IMessage, IImage{
+
+
+    //TODO: finish this later
+
 
     private final String content;
     private final long timeStamp;
@@ -24,7 +30,7 @@ public class Video implements IMessage, IImage{
     }
 
     @Override
-    public void constructMessage(State state, String nickName) throws IOException {
+    public void constructMessage(State state, String nickName, String senderName) throws IOException {
 
     }
 
@@ -34,12 +40,14 @@ public class Video implements IMessage, IImage{
     }
 
     @Override
-    public float getLength(IMessage message) {
+    public float getDimension() {
         return 0;
     }
 
     @Override
-    public float getSize(IMessage sprava) {
+    public float getSize() {
         return 0;
     }
+
+
 }

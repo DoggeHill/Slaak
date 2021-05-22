@@ -1,17 +1,14 @@
 package hyll.sk.uniza.Slakk;
 
 import hyll.sk.uniza.controllers.*;
+import hyll.sk.uniza.helpers.DemotedMessageException;
+import hyll.sk.uniza.helpers.State;
 import hyll.sk.uniza.messages.*;
 import hyll.sk.uniza.users.*;
 
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.file.Watchable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Slakk {
     private final Parser parser;
@@ -26,43 +23,41 @@ public class Slakk {
      */
     public void runSlakk() {
 
+        //Demoted messages-> lower in the hierarchy
+        //Elevated messages-> classic ones
+
+        //Create demoted message
         IMessage welcomeMessage = new WelcomeMessage("Welcome to Slaak");
-        System.out.println(
-                welcomeMessage.toString());
+        ((WelcomeMessage) welcomeMessage).printString();
 
         try {
-            welcomeMessage.constructMessage(State.SENDER, "nieck");
+            welcomeMessage.constructMessage(State.SENDER, "", "");
         } catch (IOException | DemotedMessageException e) {
             e.printStackTrace();
         }
+
+
         IMessage napovedaMessage = new NapovedaMessage();
         try {
-            napovedaMessage.constructMessage(State.SENDER, "sdv");
+            napovedaMessage.constructMessage(State.SENDER, "", "");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DemotedMessageException e) {
             e.printStackTrace();
         }
 
+
+
         Date date = new Date();
 
-        System.out.println(date.getTime());
-        System.out.println(new Date(date.getTime()));
-
-
-        IUser Jano = new User();
-        IUser Bot = new UserManager();
-
-
-        IUser Fero = new User();
-
+        IUser Jano = new User("Jano");
+        IUser Fero = new User("Fero");
 
 
         Fero.createMessage(new TextMessage("content", date.getTime()));
         Fero.sendMessages(Jano);
 
-        //IMessage videoMessage = new Video("sdfse", 5);
-        //Jano.sendMessages(Fero);
+
 
         IMessage voiceMessage = null;
         try {

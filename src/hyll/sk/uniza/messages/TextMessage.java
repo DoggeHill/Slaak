@@ -1,6 +1,8 @@
 package hyll.sk.uniza.messages;
 
-import hyll.sk.uniza.Slakk.DemotedMessageException;
+import hyll.sk.uniza.helpers.DemotedMessageException;
+import hyll.sk.uniza.helpers.DatabaseLoader;
+import hyll.sk.uniza.helpers.State;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,9 +28,9 @@ public class TextMessage implements IMessage {
     }
 
     @Override
-    public void constructMessage(State state, String nickName) throws IOException, DemotedMessageException {
+    public void constructMessage(State state, String nickName, String senderName) throws IOException, DemotedMessageException {
         FileWriter fw = loadDatabase();
-        fw.write(nickName + " " + this.content + " " + this.timeStamp + "\r\n");
+        fw.write("from: " + senderName + " to: " + nickName + " " + this.content + " at: " + this.timeStamp + "\r\n");
         System.out.println("Storing message: " + this.getFormat() + " into database");
         fw.close();
     }
