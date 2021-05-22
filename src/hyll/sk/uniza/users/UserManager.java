@@ -26,9 +26,10 @@ public class UserManager implements IUser{
     }
 
     @Override
-    public void receiveMessage(IMessage message) {
+    public void receiveMessage(IMessage message, String senderName) {
 
     }
+
 
     @Override
     public void sendMessages(IUser user) {
