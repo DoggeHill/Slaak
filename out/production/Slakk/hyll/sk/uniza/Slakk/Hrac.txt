@@ -1,0 +1,118 @@
+Just for an inspiration
+
+
+
+
+
+package sk.uniza.fri.worldOfFri.hra;
+
+import sk.uniza.fri.worldOfFri.mapa.Miestnost;
+import sk.uniza.fri.worldOfFri.npc.IPostava;
+import sk.uniza.fri.worldOfFri.predmety.IPredmet;
+
+import java.util.HashMap;
+
+
+public class Hrac {
+
+    private Miestnost aktualnaMiestnost;
+    private HashMap<String, IPredmet> predmety;
+
+    private int energia;
+
+    public Hrac(Miestnost startovaciaMiestnost) {
+        this.aktualnaMiestnost = startovaciaMiestnost;
+        this.predmety = new HashMap<>();
+        this.energia = 1;
+    }
+
+    public void chod(String smer) {
+        // Pokus o opustenie aktualnej miestnosti danym vychodom.
+        Miestnost novaMiestnost = this.aktualnaMiestnost.dajVychod(smer);
+
+        if (novaMiestnost == null) {
+            System.out.println("Tam nie je vychod!");
+            return;
+        }
+
+        if (!novaMiestnost.mozemVstupit(this.aktualnaMiestnost)) {
+            System.out.println("Teraz tam nemôzeš isť!");
+            return;
+        }
+        if (this.energia < 1) {
+            System.out.println("Odpadol si od vyčerpania!!!");
+            return;
+        }
+        this.energia--;
+        this.aktualnaMiestnost = novaMiestnost;
+        this.aktualnaMiestnost.vypisMiestnot();
+
+    }
+
+    public void polozPredmet(String nazov) {
+        IPredmet predmet = this.predmety.remove(nazov);
+        if (predmet == null) {
+            System.out.println("Tento predmet nemám!");
+        } else {
+            this.aktualnaMiestnost.vlozPredmet(predmet);
+            System.out.printf("Položil som do miestnosti %s%n", predmet.getNazov());
+        }
+    }
+
+    public void zoberPredmet(String nazov) {
+        IPredmet predmet = this.aktualnaMiestnost.zoberPredmet(nazov);
+        if (predmet == null) {
+            System.out.println("Tento predmet v miestnosti nieje!");
+        } else if (!predmet.jeZodvihnutelny()) {
+            this.aktualnaMiestnost.vlozPredmet(predmet);
+            System.out.println("Tento predmet sa neda vziat!");
+        } else {
+            this.predmety.put(predmet.getNazov(), predmet);
+            System.out.printf("Zobral som %s%n", predmet.getNazov());
+        }
+    }
+
+    public void vypisInventar() {
+        System.out.print("Predmety: ");
+
+        for (String predmet : this.predmety.keySet()) {
+            System.out.print(predmet + " ");
+        }
+
+        System.out.println();
+    }
+
+    public void pouzi(String nazov) {
+        IPredmet predmet = this.aktualnaMiestnost.zoberPredmet(nazov);
+        if (predmet == null) {
+            predmet = this.predmety.remove(nazov);
+            if (predmet == null) {
+                System.out.println("Tento predmet nemam");
+                return;
+            }
+        }
+
+        predmet.pouziSa(this);
+    }
+
+    public void zvysEnergiu(int hodnota) {
+        this.energia += hodnota;
+    }
+
+    public void pridajPredmet(IPredmet predmet) {
+        this.predmety.put(predmet.getNazov(), predmet);
+    }
+
+    public void oslovNPC(String meno) {
+        IPostava npc = this.aktualnaMiestnost.dajNPC(meno);
+        if (npc == null) {
+            System.out.println("Tento npv v miestnosti nieje!");
+        } else {
+            npc.zacniRozhovor(this);
+        }
+    }
+
+    public Miestnost getAktualnaMiestnost() {
+        return this.aktualnaMiestnost;
+    }
+}

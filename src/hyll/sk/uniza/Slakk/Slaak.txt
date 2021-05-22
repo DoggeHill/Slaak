@@ -1,0 +1,16 @@
+Cieľom mojej semestrálnej práce je vytvoriť CLI program ktorý umožní:
+
+1. registráciu užívateľa
+2. odstránenie užívateľa
+3. posielanie rôznych typov správ medzi užívateľmi
+4. využitie bota s predpripraveným obsahom
+5. vypísanie welcome message a nápovedy
+6. správy/ užívatelia sa budú ukladať do databázy, ktorá bude reprezentovaná objektom s hashmap
+7. budú sa dať vyhľadávať správy a užívatelia podľa rôznych kritérií a takisto mazať
+
+
+----možné vylepšenia na záver
+1. vytvorenie message channels
+2. vytvorenie kamarátstiev medzi užívateľmi
+3. testy
+4. sockets
