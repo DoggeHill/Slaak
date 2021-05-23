@@ -1,22 +1,29 @@
 package hyll.sk.uniza.messages;
 
+import hyll.sk.uniza.helpers.DemotedMessageException;
 import hyll.sk.uniza.helpers.State;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
+
+/**
+ * This class is in the developement
+ * @author patri
+ */
 public class Video implements IMessage, IImage{
 
+    public Video(){
+        System.out.println("This type format is not yet supported!");
+    }
+    @Override
+    public float getDimension() {
+        return 0;
+    }
 
-    //TODO: finish this later
-
-
-    private final String content;
-    private final long timeStamp;
-
-    public Video(String content, long timeStamp){
-        this.content = content;
-        this.timeStamp = timeStamp;
+    @Override
+    public float getSize() {
+        return 0;
     }
 
     @Override
@@ -30,24 +37,12 @@ public class Video implements IMessage, IImage{
     }
 
     @Override
-    public void constructMessage(State state, String nickName, String senderName) throws IOException {
+    public void constructMessage(State state, String nickName, String senderName) throws IOException, DemotedMessageException {
 
     }
 
     @Override
-    public FileWriter loadDatabase() throws IOException {
+    public FileWriter loadDatabase() throws IOException, DemotedMessageException {
         return null;
     }
-
-    @Override
-    public float getDimension() {
-        return 0;
-    }
-
-    @Override
-    public float getSize() {
-        return 0;
-    }
-
-
 }

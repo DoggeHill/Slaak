@@ -15,6 +15,8 @@ package hyll.sk.uniza.controllers;
  * @version 2006.03.30
  * @author  lokalizacia: Lubomir Sadlon, Jan Janech
  * @version 2012.02.21
+ *
+ * @author patri made a few changes
  */
 
 public class Command {
@@ -26,10 +28,7 @@ public class Command {
     /**
      * Inicializuje slova prikazu dvomi zadanymi parametrami. Jeden alebo oba
      * parametre mozu mat hodnotu <null>.
-     * @param nazovPrikazu prve slovo - nazov prikazu,
-     *                       null, ak je prikaz neznamy.
-     * @param parameter druhe slovo prikazu.
-     * @param parameter
+     * Overridden to support multiple cases
      */
 
 
@@ -53,12 +52,6 @@ public class Command {
         this.parameter3 = parameter3;
 
     }
-
-
-
-
-
-
     /**
      * @return prve slovo - nazov prikazu.
      */
@@ -73,7 +66,6 @@ public class Command {
         return this.parameter;
     }
 
-
     /**
      * @return tretie slovo - parameter2 prikazu.
      */
@@ -82,7 +74,7 @@ public class Command {
     }
 
     /**
-     * @return tretie slovo - parameter2 prikazu.
+     * @return stvrte slovo - parameter3 prikazu.
      */
     public String getParameter3() {
         return this.parameter3;
@@ -100,5 +92,11 @@ public class Command {
      */
     public boolean maParameter() {
         return this.parameter != null;
+    }
+    public boolean maParameter2() {
+        return this.parameter2 != null;
+    }
+    public boolean maParameter3() {
+        return this.parameter3 != null;
     }
 }

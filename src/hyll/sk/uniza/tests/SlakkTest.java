@@ -3,6 +3,7 @@ package hyll.sk.uniza.tests;
 import hyll.sk.uniza.helpers.DatabaseLoader;
 import hyll.sk.uniza.messages.*;
 import hyll.sk.uniza.users.BasicUser;
+import hyll.sk.uniza.users.LimitedUser;
 import hyll.sk.uniza.users.PremiumUser;
 import hyll.sk.uniza.users.User;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +15,10 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testing
+ * @author patri
+ */
 class SlakkTest {
     Date date = new Date();
 
@@ -25,36 +30,18 @@ class SlakkTest {
 
     @Test
     @DisplayName("Welcome message test")
-    public void testMultiply() {
-        assertEquals("ahoj", wm.getFormat(),
-                "Regular multiplication should work");
+    public void testWelcomeMessage() {
+        assertEquals("ahoj", wm.getFormat()
+        );
     }
 
-
-    @Test
-    @DisplayName("Welcome message test")
-    public void testMessageTypes() {
-        assertEquals("ahoj", wm.getFormat(),
-                "Regular multiplication should work");
-
-    }
-
-    /*
-    IMessage textMessage = new TextMessage("content", 0);
-    IMessage voiceMessage = new VoiceMessage(25, 0);
-    IMessage picture = new Pic("content", 0);
-    IMessage video = new Video("content", 0);
-
-    IUser Fero = new User();
-*/
     @Test
     @DisplayName("Database")
     public void loadDatabases() {
-      /*  Assertions.assertThrows(IOException.class, () -> {
-            DatabseLoader.loadDatabase("nsdf");
+        Assertions.assertThrows(IOException.class, () -> {
+            DatabaseLoader.loadDatabase("nsdf");
         });
-*/
-        Assertions.assertThrows(IOException.class, () -> DatabaseLoader.loadDatabase("textss.txt"));
+        Assertions.assertThrows(IOException.class, () -> DatabaseLoader.loadDatabase("texts.txts"));
     }
 
     @Test
@@ -80,6 +67,56 @@ class SlakkTest {
 
         Fero.createMessage(new TextMessage("content", date.getTime()));
         Fero.createMessage(new TextMessage("content2", date.getTime()));
+        Fero.sendMessages(Jano);
+
+    }
+
+    @Test
+    @DisplayName("Basic messaging above buffer limit messages")
+    public void doTextAboveLimitBufferMessage() {
+        Date date = new Date();
+
+        User Jano = new LimitedUser("Jano");
+        User Fero = new LimitedUser("Fero");
+
+        Fero.createMessage(new TextMessage("content", date.getTime()));
+        Fero.createMessage(new TextMessage("content1", date.getTime()));
+        Fero.createMessage(new TextMessage("content2", date.getTime()));
+        Fero.createMessage(new TextMessage("content3", date.getTime()));
+        Fero.createMessage(new TextMessage("content4", date.getTime()));
+        Fero.createMessage(new TextMessage("content5", date.getTime()));
+        Fero.createMessage(new TextMessage("content6", date.getTime()));
+        Fero.createMessage(new TextMessage("content7", date.getTime()));
+        Fero.createMessage(new TextMessage("content8", date.getTime()));
+        Fero.createMessage(new TextMessage("content9", date.getTime()));
+        Fero.createMessage(new TextMessage("content10", date.getTime()));
+        Fero.sendMessages(Jano);
+
+    }
+
+
+    @Test
+    @DisplayName("Basic messaging above message limit messages")
+    public void doTextAboveLimitMessage() {
+        Date date = new Date();
+
+        User Jano = new LimitedUser("Jano");
+        User Fero = new LimitedUser("Fero");
+
+        Fero.createMessage(new TextMessage("content", date.getTime()));
+        Fero.sendMessages(Jano);
+
+        Fero.createMessage(new TextMessage("content1", date.getTime()));
+        Fero.createMessage(new TextMessage("content2", date.getTime()));
+        Fero.createMessage(new TextMessage("content3", date.getTime()));
+        Fero.createMessage(new TextMessage("content4", date.getTime()));
+        Fero.sendMessages(Jano);
+
+        Fero.createMessage(new TextMessage("content5", date.getTime()));
+        Fero.createMessage(new TextMessage("content6", date.getTime()));
+        Fero.createMessage(new TextMessage("content7", date.getTime()));
+        Fero.sendMessages(Jano);
+
         Fero.sendMessages(Jano);
 
     }
@@ -226,7 +263,7 @@ class SlakkTest {
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
-        Assertions.assertThrows(IllegalArgumentException.class, () ->  Fero.sendMessage(Jano));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Fero.sendMessage(Jano));
 
 
     }
@@ -238,7 +275,7 @@ class SlakkTest {
         User Jano = new PremiumUser("Jano");
 
         try {
-            Fero.createMessage(new VoiceMessage(3, date.getTime()));
+            Fero.createMessage(new VoiceMessage(7, date.getTime()));
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
@@ -246,6 +283,7 @@ class SlakkTest {
         Fero.sendMessage(Jano);
 
     }
+
     @Test
     @DisplayName("Send image message")
     public void sendImageMessage() {
@@ -256,6 +294,26 @@ class SlakkTest {
         Fero.sendMessage(Jano);
 
     }
+    @Test
+    @DisplayName("Send image ovveriden message")
+    public void sendImageOverridenMessage() {
+        User Fero = new PremiumUser("Fero");
+        User Jano = new PremiumUser("Jano");
 
+        Fero.createMessage(new Pic("wef", 0));
+        Fero.createMessage(new Pic("wef2", 0));
+        Fero.sendMessage(Jano);
 
+    }
+
+    @Test
+    @DisplayName("Send video message")
+    public void sendVideoMessage() {
+        User Fero = new PremiumUser("Fero");
+        User Jano = new PremiumUser("Jano");
+
+        Fero.createMessage(new Video());
+        Fero.sendMessage(Jano);
+
+    }
 }

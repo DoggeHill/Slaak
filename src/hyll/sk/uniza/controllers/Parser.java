@@ -12,6 +12,8 @@ import java.util.Scanner;
  * @author Michael Kolling and David J. Barnes
  * @author lokalizacia: Lubomir Sadlon, Jan Janech
  * @version 2012.02.21
+ *
+ * @author patri made a few changes
  */
 public class Parser {
     private final CommandNames prikazy;  // odkaz na pripustne nazvy prikazov
@@ -57,12 +59,9 @@ public class Parser {
         if (this.prikazy.jePrikaz(prikaz)) {
             // vytvori platny prikaz
 
-
-
             if(parameter3 != null){
                 return new Command(prikaz, parameter, parameter2, parameter3);
             }
-
             return parameter2 == null ? new Command(prikaz, parameter, parameter2) : new Command(prikaz, parameter, parameter2);
         } else {
             // vytvori neplatny - "neznamy" prikaz

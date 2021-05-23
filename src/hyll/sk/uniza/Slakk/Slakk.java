@@ -2,6 +2,8 @@ package hyll.sk.uniza.Slakk;
 
 import hyll.sk.uniza.controllers.*;
 import hyll.sk.uniza.helpers.DemotedMessageException;
+import hyll.sk.uniza.helpers.ElasticSearch;
+import hyll.sk.uniza.helpers.MessageType;
 import hyll.sk.uniza.helpers.State;
 import hyll.sk.uniza.messages.*;
 import hyll.sk.uniza.users.*;
@@ -34,51 +36,17 @@ public class Slakk {
 
         //Create demoted message
 
-        /*
         IMessage welcomeMessage = new WelcomeMessage("Welcome to Slaak");
         ((WelcomeMessage) welcomeMessage).printString();
 
+
+        /*
         try {
             welcomeMessage.constructMessage(State.SENDER, "", "");
         } catch (IOException | DemotedMessageException e) {
             e.printStackTrace();
         }
-
         */
-
-
-        /*
-        IMessage napovedaMessage = new NapovedaMessage();
-        try {
-            napovedaMessage.constructMessage(State.SENDER, "", "");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DemotedMessageException e) {
-            e.printStackTrace();
-        }
-        */
-
-        /*
-
-        User Jano = new BasicUser("Jano");
-        User Fero = new BasicUser("Fero");
-
-
-        Fero.createMessage(new TextMessage("content", date.getTime()));
-        Fero.sendMessages(Jano);
-
-
-
-        IMessage voiceMessage = null;
-        try {
-            voiceMessage = new VoiceMessage(5000, 6);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Fero.createMessage(voiceMessage);
-
-        */
-
 
         boolean jeKoniec;
 
@@ -105,11 +73,6 @@ public class Slakk {
             return false;
         }
 
-        System.out.println(command.getNazov());
-        System.out.println(command.getParameter());
-        System.out.println(command.getParameter2());
-        System.out.println(command.getParameter3());
-
         String nazovPrikazu = command.getNazov();
 
         switch (nazovPrikazu) {
@@ -125,8 +88,8 @@ public class Slakk {
             case "sendText":
                 this.sendText(command);
                 return false;
-            case "sendVoice":
-                this.sendVoice(command);
+            case "sendMessage":
+                this.sendMessage(command);
                 return false;
             case "sendAllTexts":
                 this.sendTextAll(command);
@@ -137,14 +100,78 @@ public class Slakk {
             case "debug":
                 this.debug(command);
                 return false;
+            case "search":
+                this.search(command);
+                return false;
+            case "searchDate":
+                this.searchDate(command);
+                return false;
+            case "exit":
+                return true;
             default:
                 return false;
         }
     }
 
+    private void search(Command command) {
+        if (command.maParameter() && command.maParameter2() && command.maParameter3()) {
+            MessageType type = MessageType.VIDEO;
+            switch (command.getParameter3().charAt(0)) {
+                case 't', 'T':
+                    System.out.println("Cannot open text use another search query...");
+                    return;
+                case 'v', 'V':
+                    type = MessageType.AUDIO;
+                    break;
+                case 'p', 'P':
+                    type = MessageType.PICTURE;
+            }
+            User user1 = this.users.get(command.getParameter());
+            try{
+            ElasticSearch.openMessage(user1, command.getParameter2(), type);
+            } catch(NullPointerException e){
+                System.out.println("Something went wrong....");
+            }
+        } else if(command.maParameter() && command.maParameter2()){
+            User user1 = this.users.get(command.getParameter());
+            try{
+                ElasticSearch.findAllMessagesByContent(user1, command.getParameter2());
+            } catch(NullPointerException e){
+                System.out.println("Something went wrong....");
+            }
+
+        } else if(command.maParameter()){
+            User user1 = this.users.get(command.getParameter());
+            try{
+                ElasticSearch.findAllMessages(user1);
+            } catch(NullPointerException e){
+                System.out.println("Something went wrong....");
+            }
+        } else{
+            System.out.println("Not very well written, returning");
+        }
+
+    }
+
+    private void searchDate(Command command){
+        User user1 = this.users.get(command.getParameter());
+        if(!(command.getParameter2().equals("today") || command.getParameter2().equals("yesterday"))){
+            System.out.println("Bad time see help");
+            return;
+        }
+        ElasticSearch.searchByDate(user1, command.getParameter2());
+    }
+
     private void createUser(Command command) {
         String name = command.getParameter();
-        this.users.put(name, new BasicUser(name));
+        char type = name.charAt(0);
+        name = name.substring(1);
+        switch (type) {
+            case 'b', 'B' -> this.users.put(name, new BasicUser(name));
+            case 'p', 'P' -> this.users.put(name, new PremiumUser(name));
+            case 'L', 'l' -> this.users.put(name, new LimitedUser(name));
+            default -> System.out.println("You have selected an incorrect type of user... type help for a help");
+        }
     }
 
     private void showUsers() {
@@ -160,8 +187,6 @@ public class Slakk {
 
     private void sendText(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
-            System.out.println(command.getParameter());
-            System.out.println(command.getParameter2());
             System.out.println("User one does not exits..");
             return;
         }
@@ -178,29 +203,56 @@ public class Slakk {
         user1.sendMessages(user2);
 
     }
-    private void sendVoice(Command command) {
+
+    private void sendMessage(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
-            System.out.println(command.getParameter());
-            System.out.println(command.getParameter2());
             System.out.println("User one does not exits..");
             return;
         }
         if (!this.users.containsKey(command.getParameter2())) {
-            System.out.println("User two does not exits..");
             return;
         }
 
         User user1 = this.users.get(command.getParameter());
         User user2 = this.users.get(command.getParameter2());
+
         String content = command.getParameter3();
+        char argument = content.charAt(0);
+        content = content.substring(1);
 
-        try {
-            user1.createMessage(new VoiceMessage(4, date.getTime()));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        switch (argument) {
+            case 't', 'T':
+                this.sendText(command);
+            case 'v', 'V':
+                try {
+                    user1.createMessage(new VoiceMessage(5, date.getTime()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                try {
+
+                    user1.sendMessages(user2);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 'p', 'P':
+
+                user1.createMessage(new Pic(content, date.getTime()));
+
+                try {
+                    user1.sendMessage(user2);
+
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                break;
+            default:
+                System.out.println("You have selected an incorrect type of message... type help for a help");
         }
-        user1.sendMessages(user2);
-
     }
 
 
@@ -226,8 +278,8 @@ public class Slakk {
 
     private void createText(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
-            System.out.println(command.getParameter());
-            System.out.println(command.getParameter2());
+           /* System.out.println(command.getParameter());
+            System.out.println(command.getParameter2());*/
             System.out.println("User one does not exits..");
             return;
         }
@@ -235,7 +287,7 @@ public class Slakk {
         User user1 = this.users.get(command.getParameter());
         user1.createMessage(new TextMessage(content, date.getTime()));
         String output = (user1.getUsersMessageBuffer());
-        System.out.println(output);
+       // System.out.println(output);
         this.debug(command);
 
     }

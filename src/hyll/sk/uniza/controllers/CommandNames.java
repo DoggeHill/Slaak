@@ -4,12 +4,14 @@ package hyll.sk.uniza.controllers;
  * @version 2006.03.30
  * @author  lokalizacia: Lubomir Sadlon, Jan Janech
  * @version 2012.02.21
+ *
+ * @author patri made a few changes
  */
 
 public class CommandNames {
     // konstantne pole nazvov prikazov
     private static final String[] PLATNE_PRIKAZY = {
-        "create", "showUsers", "pomoc", "sendText", "debug", "createText", "sendTextAll", "oslov"
+        "create", "showUsers", "help", "sendText", "debug", "createText", "sendAllTexts", "sendMessage", "search", "exit", "searchDate"
     };
 
     /**

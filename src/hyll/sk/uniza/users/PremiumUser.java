@@ -9,6 +9,8 @@ public class PremiumUser extends User {
 
     public PremiumUser(String nickName) {
         super(nickName);
+        super.setBufferSize(99);
+
     }
 
 
@@ -17,4 +19,11 @@ public class PremiumUser extends User {
         super.sendMessage(user);
 
     }
+
+    @Override
+    protected int getLimit() {
+        return -1;
+    }
+
+
 }

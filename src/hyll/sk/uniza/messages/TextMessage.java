@@ -7,6 +7,12 @@ import hyll.sk.uniza.helpers.State;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
+/**
+ * TextMessage representation
+ *
+ * @author patri
+ */
 public class TextMessage implements IMessage {
 
     private final String content;
@@ -27,6 +33,14 @@ public class TextMessage implements IMessage {
         return this.timeStamp;
     }
 
+    /**
+     * Simple create a record in the texts database
+     * @param state      of the message
+     * @param nickName   name of the user
+     * @param senderName name of the receiver
+     * @throws IOException             err
+     * @throws DemotedMessageException special err
+     */
     @Override
     public void constructMessage(State state, String nickName, String senderName) throws IOException, DemotedMessageException {
         FileWriter fw = loadDatabase();
