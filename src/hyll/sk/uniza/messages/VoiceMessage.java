@@ -28,9 +28,8 @@ public class VoiceMessage implements IMessage {
         int channels = 2;
         boolean signed = true;
         boolean bigEndian = true;
-        AudioFormat format = new AudioFormat(sampleRate, sampleSizeInBits,
+        return new AudioFormat(sampleRate, sampleSizeInBits,
                 channels, signed, bigEndian);
-        return format;
     }
 
     // the line from which audio data is captured
@@ -38,7 +37,7 @@ public class VoiceMessage implements IMessage {
 
 
     public VoiceMessage(long length, long timeStamp) throws IOException {
-        this.recordTime = length;
+        this.recordTime = length * 1000;
         this.timeStamp = timeStamp;
         this.wavFile = DatabaseLoader.audioFile();
         this.orderNumber = DatabaseLoader.getPosition(MessageType.AUDIO);
@@ -59,24 +58,23 @@ public class VoiceMessage implements IMessage {
     public void constructMessage(State state, String nickName, String senderName) throws IOException {
 
         //Create threat and in the end stop audio recorder
-        Thread stopper = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(recordTime);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                line.stop();
-                line.close();
-                System.out.println("Finished");
+        Thread stopper = new Thread(() -> {
+            try {
+                Thread.sleep(recordTime);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
+            line.stop();
+            line.close();
+            System.out.println("Finished");
         });
 
         stopper.start();
         this.start();
 
         FileWriter fw = loadDatabase();
-        fw.write("from: " + senderName + " to: " + nickName + " type: voice length:" + this.recordTime + " at: " + this.timeStamp + "\r\n");
+
+        fw.write("from: " + senderName + " to: " + nickName + " type: voice length:" + this.recordTime + " order number "+ (this.orderNumber-1) + " at: " + this.timeStamp + "\r\n");
         System.out.println("Storing message: " + this.getFormat() + " into database");
         fw.close();
     }
@@ -101,10 +99,8 @@ public class VoiceMessage implements IMessage {
             // start recording
             AudioSystem.write(ais, fileType, wavFile);
 
-        } catch (LineUnavailableException ex) {
+        } catch (LineUnavailableException | IOException ex) {
             ex.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         }
     }
 

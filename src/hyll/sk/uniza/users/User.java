@@ -13,24 +13,31 @@ public abstract class User {
 
     MessageBuffer<TextMessage> messageBuffer;
     private String nickName;
+    private IMessage messageToSend;
 
     public User(String nickName) {
         this.nickName = nickName;
-        this.messageBuffer = new MessageBuffer(10, this.nickName);
+        System.out.println("new buffer");
+        this.messageBuffer = new MessageBuffer<>(10, this.nickName);
+        this.messageToSend = null;
     }
 
-    public String getName() {
+    protected String getName() {
         return this.nickName;
     }
 
 
-    public int numberOfAcceptedMessages() {
+    protected int numberOfAcceptedMessages() {
         return 0;
     }
 
 
-    public void sendMessage(IMessage message) {
+    public void sendMessage(User user) {
 
+        user.receiveMessage(this.messageToSend, this.nickName);
+    }
+    protected IMessage getMessageToSend(){
+        return this.messageToSend;
     }
 
 
@@ -38,7 +45,11 @@ public abstract class User {
     public void createMessage(IMessage message) {
         if (message instanceof TextMessage) {
             this.messageBuffer.saveMessageToBuffer((TextMessage) message);
+            System.out.println("Saving to buffer");
+        } else{
+            this.messageToSend = message;
         }
+
     }
 
     //Debug
@@ -46,25 +57,32 @@ public abstract class User {
         TextMessage[] tx = this.messageBuffer.getMessages();
         StringBuilder sb = new StringBuilder();
         for (TextMessage textMessage : tx) {
-            if (textMessage instanceof TextMessage) {
-                sb.append(textMessage.getFormat() + " ");
+            if (textMessage != null) {
+                sb.append(textMessage.getFormat()).append(" ");
             }
         }
         return sb.toString();
     }
 
     public void sendMessages(User user) {
-        TextMessage arrMess[] = null;
+        if(this.messageToSend != null){
+            user.receiveMessage(this.messageToSend, this.nickName );
+            System.out.println("here");
+            return;
+        }
+
+        TextMessage[] arrMess;
         try {
             arrMess = this.messageBuffer.getMessages();
         } catch (Exception e) {
             System.out.println("Message not in buffer");
             return;
         }
+
         for (IMessage mess : arrMess) {
-            if (mess instanceof TextMessage) {
                 user.receiveMessage(mess, this.nickName);
-            }
+                if(mess == null) continue;
+            System.out.println(mess);
         }
         this.messageBuffer.clearBuffer();
     }
@@ -77,11 +95,11 @@ public abstract class User {
         this.messageBuffer.clearBuffer(i);
     }
 
-
-    //TODO: this will be overriden by method with argument message bcs of buffer
-
     //should be private
-    public void receiveMessage(IMessage message, String senderName) {
+    protected void receiveMessage(IMessage message, String senderName) {
+        if(message == null) return;
+        System.out.println(message);
+
         try {
             message.constructMessage(State.RECEIVER, this.nickName, senderName);
         } catch (IOException | DemotedMessageException e) {

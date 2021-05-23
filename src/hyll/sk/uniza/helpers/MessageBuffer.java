@@ -23,17 +23,18 @@ public class MessageBuffer<E extends TextMessage> {
     }
 
     public void saveMessageToBuffer(E message) {
-        if (!(message instanceof IImage)) {
-            this.messages.add( message );
-        }
+
+        this.messages.add(message);
+        System.out.println("Saved to buffer...");
+
     }
 
-    public void clearBuffer(){
+    public void clearBuffer() {
         this.messages.clear();
     }
 
-    public void clearBuffer(int i){
-        if(i > this.messages.size()){
+    public void clearBuffer(int i) {
+        if (i > this.messages.size()) {
             System.out.println("Invalid number");
             return;
         }
@@ -44,10 +45,10 @@ public class MessageBuffer<E extends TextMessage> {
     public TextMessage[] getMessages() {
         TextMessage[] tx = new TextMessage[this.size];
         byte ittCnt = 0;
-        for (IMessage message : this.messages) {
-            tx[ittCnt] = (TextMessage) this.messages.get(ittCnt++);
+        byte ittCnt2 = 1;
+        for (IMessage ignored : this.messages) {
+            tx[ittCnt] = this.messages.get(ittCnt++);
         }
-
         return tx;
     }
 }

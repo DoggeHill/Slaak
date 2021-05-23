@@ -9,3 +9,12 @@ Fero   voice  6
 Fero   voice  6
 Fero   voice  6
 Fero   voice  6
+from: Fero to: Jano type: voice length:3000 at: 1621692093631
+from: Fero to: Jano type: voice length:3000 order number + 8 at: 1621692300503
+from: Fero to: Jano type: voice length:3000 order number 8 at: 1621759582387
+from: Fero to: Jano type: voice length:3000 order number 9 at: 1621760686797
+from: Fero to: Jano type: voice length:3000 order number 9 at: 1621761533657
+from: Fero to: Jano type: voice length:3000 order number 9 at: 1621762782815
+from: Fero to: Jano type: voice length:3000 order number 9 at: 1621762844230
+from: Fero to: Jano type: voice length:3000 order number 9 at: 1621762921332
+from: Fero to: Jano type: voice length:3000 order number 9 at: 1621763653223

@@ -17,22 +17,47 @@ package hyll.sk.uniza.controllers;
  * @version 2012.02.21
  */
 
-public class Prikaz {
+public class Command {
     private final String nazovPrikazu;
     private final String parameter;
+    private final String parameter2;
+    private final String parameter3;
 
     /**
      * Inicializuje slova prikazu dvomi zadanymi parametrami. Jeden alebo oba
      * parametre mozu mat hodnotu <null>.
-
-     * @param nazovPrikazu prve slovo - nazov prikazu, 
+     * @param nazovPrikazu prve slovo - nazov prikazu,
      *                       null, ak je prikaz neznamy.
      * @param parameter druhe slovo prikazu.
+     * @param parameter
      */
-    public Prikaz(String nazovPrikazu, String parameter) {
+
+
+    public Command(String nazovPrikazu, String parameter) {
         this.nazovPrikazu = nazovPrikazu;
         this.parameter = parameter;
+        this.parameter2 = null;
+        this.parameter3 = null;
     }
+    public Command(String nazovPrikazu, String parameter, String parameter2) {
+        this.nazovPrikazu = nazovPrikazu;
+        this.parameter = parameter;
+        this.parameter2 = parameter2;
+        this.parameter3 = null;
+
+    }
+    public Command(String nazovPrikazu, String parameter, String parameter2, String parameter3) {
+        this.nazovPrikazu = nazovPrikazu;
+        this.parameter = parameter;
+        this.parameter2 = parameter2;
+        this.parameter3 = parameter3;
+
+    }
+
+
+
+
+
 
     /**
      * @return prve slovo - nazov prikazu.
@@ -46,6 +71,21 @@ public class Prikaz {
      */
     public String getParameter() {
         return this.parameter;
+    }
+
+
+    /**
+     * @return tretie slovo - parameter2 prikazu.
+     */
+    public String getParameter2() {
+        return this.parameter2;
+    }
+
+    /**
+     * @return tretie slovo - parameter2 prikazu.
+     */
+    public String getParameter3() {
+        return this.parameter3;
     }
 
     /**

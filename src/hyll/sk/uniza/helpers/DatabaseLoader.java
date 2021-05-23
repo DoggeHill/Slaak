@@ -24,25 +24,25 @@ public class DatabaseLoader {
     }
 
     public static int getPosition(MessageType e) {
-        String actualPath = "";
-        switch (e) {
-            case AUDIO:
-                actualPath = AUDIO_PATH;
-                break;
-            case PCTURE:
-                actualPath = PIC_PATH;
-                break;
-            case VIDEO:
-                actualPath = VIDEO_PATH;
-                break;
-        }
+        String actualPath = switch (e) {
+            case AUDIO -> AUDIO_PATH;
+            case PCTURE -> PIC_PATH;
+            case VIDEO -> VIDEO_PATH;
+            default -> "";
+        };
         File file = new File(actualPath);
         String lastName = "";
+        if(file.listFiles() == null){
+            return 0;
+        }
         for (File f : file.listFiles()) {
             lastName = f.getName();
         }
         System.out.println(lastName);
-        String nameWithEx[] = lastName.split("\\.");
+        String[] nameWithEx = lastName.split("\\.");
+        if(nameWithEx[0].equals("")){
+            return 0;
+        }
         int numberInRow = Integer.parseInt(nameWithEx[0]);
         numberInRow++;
         System.out.println(numberInRow);
@@ -56,21 +56,19 @@ public class DatabaseLoader {
         return file;
     }
 
+    public static File deleteAudioFile() throws IOException {
+        File file;
+        file = new File(AUDIO_PATH + "\\" + (getPosition(MessageType.AUDIO)) + ".wav");
+        file.delete();
+        return file;
+    }
+
+
     public static File pictureFile() throws IOException {
         File file;
         file = new File(PIC_PATH + "\\" + getPosition(MessageType.PCTURE) + ".png");
         return file;
     }
 
-    /*
 
-    SCAN FILE
-         File actual = new File(".");
-        for( File f : actual.listFiles()){
-            System.out.println( f.getName() );
-        }
-        return actual;
-
-
-     */
 }

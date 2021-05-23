@@ -8,34 +8,35 @@ import java.util.Scanner;
  * interpretovat ho ako prikaz hry. Kazda sprava dajPrikaz sposobi, ze parser
  * precita jeden riadok z terminaloveho okna a vyberie z neho prve dve slova.
  * Tie dve slova pouzije ako parametre v sprave new triede sk.uniza.fri.worldOfFri.prikazy.Prikaz.
- * 
- * @author  Michael Kolling and David J. Barnes
- * @version 2006.03.30
- * @author  lokalizacia: Lubomir Sadlon, Jan Janech
+ *
+ * @author Michael Kolling and David J. Barnes
+ * @author lokalizacia: Lubomir Sadlon, Jan Janech
  * @version 2012.02.21
  */
 public class Parser {
-    private final NazvyPrikazov prikazy;  // odkaz na pripustne nazvy prikazov
+    private final CommandNames prikazy;  // odkaz na pripustne nazvy prikazov
     private final Scanner citac;         // zdroj vstupov od hraca
 
     /**
      * Vytvori citac na citanie vstupov z terminaloveho okna.
      */
     public Parser() {
-        this.prikazy = new NazvyPrikazov();
+        this.prikazy = new CommandNames();
         this.citac = new Scanner(System.in);
     }
 
     /**
      * @return prikaz zadany hracom
      */
-    public Prikaz nacitajPrikaz() {
+    public Command nacitajPrikaz() {
         System.out.print("> ");     // vyzva pre hraca na zadanie prikazu
 
         String vstupnyRiadok = this.citac.nextLine();
 
         String prikaz = null;
         String parameter = null;
+        String parameter2 = null;
+        String parameter3 = null;
 
         // najde prve dve slova v riadku 
         Scanner tokenizer = new Scanner(vstupnyRiadok);
@@ -43,17 +44,29 @@ public class Parser {
             prikaz = tokenizer.next();      // prve slovo
             if (tokenizer.hasNext()) {
                 parameter = tokenizer.next();      // druhe slovo
-                // vsimnite si, ze zbytok textu sa ignoruje
+            }
+            if (tokenizer.hasNext()) {
+                parameter2 = tokenizer.next();      // tretie slovo
+            }
+            if (tokenizer.hasNext()) {
+                parameter3 = tokenizer.next();      // štvrte slovo
             }
         }
 
         // kontrola platnosti prikazu
         if (this.prikazy.jePrikaz(prikaz)) {
             // vytvori platny prikaz
-            return new Prikaz(prikaz, parameter);
+
+
+
+            if(parameter3 != null){
+                return new Command(prikaz, parameter, parameter2, parameter3);
+            }
+
+            return parameter2 == null ? new Command(prikaz, parameter, parameter2) : new Command(prikaz, parameter, parameter2);
         } else {
             // vytvori neplatny - "neznamy" prikaz
-            return new Prikaz(null, parameter); 
+            return new Command(null, parameter, parameter2);
         }
     }
 }
