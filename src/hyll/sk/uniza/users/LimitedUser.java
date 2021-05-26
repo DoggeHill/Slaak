@@ -10,7 +10,7 @@ package hyll.sk.uniza.users;
  */
 
 public class LimitedUser extends BasicUser {
-    private static byte LIMIT = 4;
+    private static final byte LIMIT = 2;
 
     public LimitedUser(String nickName) {
         super(nickName);
@@ -23,8 +23,6 @@ public class LimitedUser extends BasicUser {
             System.out.println("You have exceeded limit in your trial...");
         } else {
             super.sendMessage(user);
-
-
         }
 
 

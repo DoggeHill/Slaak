@@ -1,22 +1,25 @@
 package hyll.sk.uniza.Slakk;
 
 import hyll.sk.uniza.controllers.*;
-import hyll.sk.uniza.helpers.DemotedMessageException;
 import hyll.sk.uniza.helpers.ElasticSearch;
 import hyll.sk.uniza.helpers.MessageType;
-import hyll.sk.uniza.helpers.State;
 import hyll.sk.uniza.messages.*;
 import hyll.sk.uniza.users.*;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+
+/**
+ * Core class
+ *
+ * @author patri
+ */
 public class Slakk {
     private final Parser parser;
-    private Date date;
+    private final Date date;
     HashMap<String, User> users;
 
     public Slakk(Parser parser) {
@@ -26,6 +29,7 @@ public class Slakk {
     }
 
     /**
+     * Inspired by FRI uniza gameloop...
      * Hlavna metoda hry.
      * Cyklicky opakuje kroky hry, kym hrac hru neukonci.
      */
@@ -38,7 +42,6 @@ public class Slakk {
 
         IMessage welcomeMessage = new WelcomeMessage("Welcome to Slaak");
         ((WelcomeMessage) welcomeMessage).printString();
-
 
         /*
         try {
@@ -113,6 +116,11 @@ public class Slakk {
         }
     }
 
+    /**
+     * Uses elasticSearch to perform a searchquery
+     *
+     * @param command
+     */
     private void search(Command command) {
         if (command.maParameter() && command.maParameter2() && command.maParameter3()) {
             MessageType type = MessageType.VIDEO;
@@ -127,41 +135,53 @@ public class Slakk {
                     type = MessageType.PICTURE;
             }
             User user1 = this.users.get(command.getParameter());
-            try{
-            ElasticSearch.openMessage(user1, command.getParameter2(), type);
-            } catch(NullPointerException e){
+            try {
+                ElasticSearch.openMessage(user1, command.getParameter2(), type);
+            } catch (NullPointerException e) {
                 System.out.println("Something went wrong....");
             }
-        } else if(command.maParameter() && command.maParameter2()){
+        } else if (command.maParameter() && command.maParameter2()) {
             User user1 = this.users.get(command.getParameter());
-            try{
+            try {
                 ElasticSearch.findAllMessagesByContent(user1, command.getParameter2());
-            } catch(NullPointerException e){
+            } catch (NullPointerException e) {
                 System.out.println("Something went wrong....");
             }
 
-        } else if(command.maParameter()){
+        } else if (command.maParameter()) {
             User user1 = this.users.get(command.getParameter());
-            try{
+            try {
                 ElasticSearch.findAllMessages(user1);
-            } catch(NullPointerException e){
+            } catch (NullPointerException e) {
                 System.out.println("Something went wrong....");
             }
-        } else{
+        } else {
             System.out.println("Not very well written, returning");
         }
 
     }
 
-    private void searchDate(Command command){
+    /**
+     * Search using date
+     * @param command
+     */
+    private void searchDate(Command command) {
+        if (!this.users.containsKey(command.getParameter())) {
+            System.out.println("User one does not exits..");
+            return;
+        }
         User user1 = this.users.get(command.getParameter());
-        if(!(command.getParameter2().equals("today") || command.getParameter2().equals("yesterday"))){
+        if (!(command.getParameter2().equals("today") || command.getParameter2().equals("yesterday"))) {
             System.out.println("Bad time see help");
             return;
         }
         ElasticSearch.searchByDate(user1, command.getParameter2());
     }
 
+    /**
+     * Create a new user
+     * @param command
+     */
     private void createUser(Command command) {
         String name = command.getParameter();
         char type = name.charAt(0);
@@ -174,17 +194,27 @@ public class Slakk {
         }
     }
 
+    /**
+     * Show all registered users
+     */
     private void showUsers() {
         for (String value : users.keySet()) {
             System.out.println(value);
         }
     }
 
+    /**
+     * Show help
+     */
     private void helpMessage() {
         IMessage helpMessage = new NapovedaMessage();
         ((NapovedaMessage) helpMessage).printString();
     }
 
+    /**
+     * Send just text message
+     * @param command
+     */
     private void sendText(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
             System.out.println("User one does not exits..");
@@ -204,6 +234,10 @@ public class Slakk {
 
     }
 
+    /**
+     * Send any kind of message
+     * @param command
+     */
     private void sendMessage(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
             System.out.println("User one does not exits..");
@@ -255,7 +289,10 @@ public class Slakk {
         }
     }
 
-
+    /**
+     * Send all texts from buffer
+     * @param command
+     */
     private void sendTextAll(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
             System.out.println(command.getParameter());
@@ -270,28 +307,33 @@ public class Slakk {
 
         User user1 = this.users.get(command.getParameter());
         User user2 = this.users.get(command.getParameter2());
-        String content = command.getParameter3();
-
+        //String content = command.getParameter3();
         user1.sendMessages(user2);
 
     }
 
+    /**
+     * Create text message
+     * @param command
+     */
     private void createText(Command command) {
         if (!this.users.containsKey(command.getParameter())) {
-           /* System.out.println(command.getParameter());
-            System.out.println(command.getParameter2());*/
             System.out.println("User one does not exits..");
             return;
         }
         String content = command.getParameter2();
         User user1 = this.users.get(command.getParameter());
         user1.createMessage(new TextMessage(content, date.getTime()));
-        String output = (user1.getUsersMessageBuffer());
-       // System.out.println(output);
+        //String output = (user1.getUsersMessageBuffer());
         this.debug(command);
 
     }
 
+    /**
+     * Just debug buffer
+     *
+     * @param command
+     */
     private void debug(Command command) {
         User user1 = this.users.get(command.getParameter());
         String output = (user1.getUsersMessageBuffer());

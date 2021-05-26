@@ -11,7 +11,7 @@ import java.io.IOException;
 
 
 /**
- * Voicemessage object
+ * VoiceMessage object
  * Voice record is a representation of the voice message. Voice recording mechanism is inspired by:
  * https://www.codejava.net/coding/capture-and-record-sound-into-wav-file-with-java-sound-api
  *

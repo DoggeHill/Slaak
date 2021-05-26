@@ -1,8 +1,6 @@
 package hyll.sk.uniza.helpers;
 
-import hyll.sk.uniza.users.BasicUser;
 import hyll.sk.uniza.users.User;
-
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -13,11 +11,11 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 
-import static hyll.sk.uniza.helpers.MessageType.*;
 
 /**
  * Elastic seaches search elastically everything
- *
+ * I learned how to play an audio file from here: https://stackoverflow.com/questions/2416935/how-to-play-wav-files-with-java
+ * I learned how to display a picture file from here: https://stackoverflow.com/questions/14353302/displaying-image-in-java
  * @author patri
  */
 public class ElasticSearch {
@@ -190,6 +188,11 @@ public class ElasticSearch {
 
     }
 
+    /**
+     * Search through all user's message and compare date of the message to the param
+     * @param user
+     * @param day
+     */
     public static void searchByDate(User user, String day) {
         long offset = 0;
         if (day.equals("today")) {
@@ -208,11 +211,18 @@ public class ElasticSearch {
                 e.printStackTrace();
             }
             while (scan.hasNext()) {
+
                 String line = scan.nextLine().toLowerCase().toString();
+
+
+
                 String[] lines = line.split(" ");
                 long date2 = Long.parseLong(lines[lines.length - 1]);
 
                 if (date.getTime() - date2 < offset) {
+                    if(!(line.contains(user.getName().toLowerCase()))){
+                        continue;
+                    }
                     System.out.println(lines[4]);
                 }
                 //System.out.println(user.getName());

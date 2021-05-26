@@ -4,7 +4,6 @@ import hyll.sk.uniza.helpers.DatabaseLoader;
 import hyll.sk.uniza.helpers.MessageType;
 import hyll.sk.uniza.helpers.State;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;

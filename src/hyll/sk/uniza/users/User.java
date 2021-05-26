@@ -44,10 +44,11 @@ public abstract class User {
 
     /**
      * Send message to the user
+     *
      * @param user name
      */
     public void sendMessage(User user) {
-        if(this.messageToSend == null){
+        if (this.messageToSend == null) {
             System.out.println("Nothing to send");
             return;
         }
@@ -64,12 +65,13 @@ public abstract class User {
             this.messageBuffer.saveMessageToBuffer((TextMessage) message);
             System.out.println("Saving to buffer");
         } else {
-            this.messageToSend = message;
+           this.messageToSend = message;
         }
     }
 
     /**
      * Core sending mechanism
+     *
      * @param user object
      */
     public void sendMessages(User user) {
@@ -89,8 +91,7 @@ public abstract class User {
 
         for (IMessage mess : arrMess) {
             if (user.getLimit() != -1 && this.numberSentMessages >= user.getLimit()) {
-                System.out.println("You have exceeded limit in your trial...");
-                this.numberSentMessages = 0;
+                System.out.println("You have exceeded limit in your trial....");
                 return;
             }
             this.numberSentMessages++;
@@ -112,6 +113,7 @@ public abstract class User {
 
     /**
      * Delete specific item in the buffer
+     *
      * @param i item
      */
     public void removeMessages(int i) {
@@ -121,7 +123,8 @@ public abstract class User {
 
     /**
      * Receive message and create what is needed
-     * @param message IMessage
+     *
+     * @param message    IMessage
      * @param senderName user's name
      */
     protected void receiveMessage(IMessage message, String senderName) {
@@ -138,6 +141,7 @@ public abstract class User {
 
     /**
      * Used for debugging and testing
+     *
      * @return buffer info
      */
     public String getUsersMessageBuffer() {

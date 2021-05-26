@@ -6,7 +6,7 @@ import hyll.sk.uniza.messages.TextMessage;
 import java.util.ArrayList;
 
 /**
- * Message buffer is buffer for fype of IMessage TextMessage used for temporary message storing
+ * Message buffer is buffer for type of IMessage TextMessage used for temporary message storing
  *
  * @param <E> type of message ot be stored in the buffer(safety reasons)
  * @author patri

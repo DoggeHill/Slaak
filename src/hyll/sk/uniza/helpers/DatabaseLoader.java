@@ -103,7 +103,7 @@ public class DatabaseLoader {
      */
     public static void deleteAudioFile() throws IOException {
         File file;
-        file = new File(AUDIO_PATH + "\\" + (getPosition(MessageType.AUDIO)) + ".wav");
+        file = new File(AUDIO_PATH + "\\" + (getPosition(MessageType.AUDIO)-1) + ".wav");
         file.delete();
     }
 
@@ -119,7 +119,7 @@ public class DatabaseLoader {
 
     public static void deletepictureFile() throws IOException {
         File file;
-        file = new File(PIC_PATH + "\\" + (getPosition(MessageType.PICTURE)) + ".png");
+        file = new File(PIC_PATH + "\\" + (getPosition(MessageType.PICTURE)-1) + ".png");
         file.delete();
     }
 
