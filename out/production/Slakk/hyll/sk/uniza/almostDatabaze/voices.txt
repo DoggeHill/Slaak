@@ -1,6 +1,0 @@
-from: Fero to: Jano voice length:7000 order number: 0 at: 1621791448632
-from: Fero to: Jano voice length:7000 order number: 2 at: 1621798381865
-from: Jaro to: Fero voice length:5000 order number: 3 at: 1621801313516
-from: Jaro to: Patrik voice length:5000 order number: 4 at: 1622015119432
-from: Niekto to: Patrik voice length:5000 order number: 5 at: 1622015119432
-from: Patrik to: Laco voice length:5000 order number: 7 at: 1622015950701

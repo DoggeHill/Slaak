@@ -1,4 +1,4 @@
-Cieľom mojej semestrálnej práce je vytvoriť CLI program ktorý umožní:
+Cieľom mojej práce je vytvoriť CLI program ktorý umožní:
 
 1. registráciu užívateľa
 2. odstránenie užívateľa
@@ -9,8 +9,9 @@ Cieľom mojej semestrálnej práce je vytvoriť CLI program ktorý umožní:
 7. budú sa dať vyhľadávať správy a užívatelia podľa rôznych kritérií a takisto mazať
 
 
-----možné vylepšenia na záver
+----pracujem na
 1. vytvorenie message channels
 2. vytvorenie kamarátstiev medzi užívateľmi
 3. testy
 4. sockets
+5. real database
